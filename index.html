@@ -159,64 +159,29 @@
     </div>
   </div>
 </section>
-<div class="container">
-        <h2 id="table-title"></h2>
-        <div class="table-container">
-            <table id="leaderboard">
-                <thead id="table-head"></thead>
-                <tbody id="table-body"></tbody>
-            </table>
-        </div>
+<div class="leaderboard-carousel">
+  <div class="carousel-controls">
+    <button class="nav-btn" id="prev-btn">←</button>
+    
+    <div class="category-tabs">
+      <button class="tab-btn active" data-category="classification">Classification</button>
+      <button class="tab-btn" data-category="regression">Regression</button>
+      <button class="tab-btn" data-category="description">Description</button>
     </div>
-<!-- End paper abstract -->
-<!-- 
-<div style="text-align: center;">
-  <h2 class="title is-3">Leaderboard on MolVision</h2>
+    
+    <button class="nav-btn" id="next-btn">→</button>
+  </div>
   
-  <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-    <thead>
-      <tr style="background-color: #f0f0f0;">
-        <th style="padding: 10px; text-align: center; border: 1px solid #ddd;">#</th>
-        <th style="padding: 10px; text-align: center; border: 1px solid #ddd;">Model</th>
-        <th style="padding: 10px; text-align: center; border: 1px solid #ddd;">Method ▼</th>
-        <th style="padding: 10px; text-align: center; border: 1px solid #ddd;">Notes</th>
-        <th style="padding: 10px; text-align: center; border: 1px solid #ddd; font-weight: bold;">Average</th>
-        <th style="padding: 10px; text-align: center; border: 1px solid #ddd;">BACE-V</th>
-        <th style="padding: 10px; text-align: center; border: 1px solid #ddd;">BBBP-V</th>
-        <th style="padding: 10px; text-align: center; border: 1px solid #ddd;">HIV-V</th>
-        <th style="padding: 10px; text-align: center; border: 1px solid #ddd;">Clintox-V</th>
-        <th style="padding: 10px; text-align: center; border: 1px solid #ddd;">Tox21-V</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">1</td>
-        <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">GPT-4o🏆</td>
-        <td style="padding: 10px; text-align: center; border: 1px solid #ddd; background-color: #e5f5f9;">ICL</td>
-        <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">k=2</td>
-        <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">85.22</td>
-        <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">79.45</td>
-        <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">82.31</td>
-        <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">77.80</td>
-        <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">91.25</td>
-        <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">88.36</td>
-      </tr>
-      <tr>
-        <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">2</td>
-        <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">GPT-4v</td>
-        <td style="padding: 10px; text-align: center; border: 1px solid #ddd; background-color: #e5f5f9;">ICL</td>
-        <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">k=2</td>
-        <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">82.17</td>
-        <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">76.22</td>
-        <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">80.45</td>
-        <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">75.67</td>
-        <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">88.93</td>
-        <td style="padding: 10px; text-align: center; border: 1px solid #ddd;">85.11</td>
-      </tr>
-    </tbody>
-  </table>
-</div> -->
-<!-- End teaser video -->
+  <div class="container">
+    <h2 id="table-title"></h2>
+    <div class="table-container">
+      <table id="leaderboard">
+        <thead id="table-head"></thead>
+        <tbody id="table-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
 <section class="section hero is-light">
   <div class="container is-max-desktop">
     <div class="columns is-centered has-text-centered">
@@ -325,19 +290,7 @@
 </section>
 
 <!-- End image carousel -->
-<!-- 
-<section class="section hero">
-  <div class="hero-body">
-    <div class="container">
-      <h2 class="Result title is-3">Quantitative Result Example</h2>
-      <div class="image-row">
-        <img src="./static/images/quantresults.jpg" alt="Image 1">
-        <img src="./static/images//quantresults2.jpg" alt="Image 2">
-        <img src="./static/images/quantresults3.jpg" alt="Image 3">
-    </div>
-    </div>
-  </div>
-</section> -->
+
 
 
 <!-- Youtube video -->

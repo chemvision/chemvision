@@ -1,62 +1,106 @@
-/**
- * MolVision Leaderboard
- * A module for rendering a sortable leaderboard table from JSON data
- */
-
-class LeaderboardRenderer {
-  /**
-   * Constructor for the LeaderboardRenderer
-   * @param {Object} config - Configuration object
-   * @param {string} config.tableId - ID of the table element
-   * @param {string} config.headId - ID of the thead element
-   * @param {string} config.bodyId - ID of the tbody element
-   * @param {string} config.titleId - ID of the title element
-   * @param {string} config.dataUrl - URL of the JSON data file
-   */
-  constructor(config) {
-    this.tableId = config.tableId;
-    this.headId = config.headId;
-    this.bodyId = config.bodyId;
-    this.titleId = config.titleId;
-    this.dataUrl = config.dataUrl;
-    
+class CarouselLeaderboard {
+  constructor() {
+    this.categories = [
+      {
+        id: 'classification',
+        title: 'Classification Tasks Leaderboard',
+        dataUrl: 'static/json/leaderboard-classification.json'
+      },
+      {
+        id: 'regression', 
+        title: 'Regression Tasks Leaderboard',
+        dataUrl: 'static/json/leaderboard-regression.json'
+      },
+      {
+        id: 'description',
+        title: 'Molecular Description Leaderboard', 
+        dataUrl: 'static/json/leaderboard-description.json'
+      }
+    ];
+    this.currentIndex = 0;
     this.data = null;
-    this.sortConfig = {
-      key: 'average',
-      direction: 'desc'
-    };
+    this.sortConfig = { key: 'average', direction: 'desc' };
     
-    // Bind methods to this instance
-    this.handleSort = this.handleSort.bind(this);
-    this.loadData = this.loadData.bind(this);
-    this.renderTable = this.renderTable.bind(this);
+    this.init();
   }
   
-  /**
-   * Load data from JSON file
-   * @returns {Promise} Promise resolving when data is loaded
-   */
-  async loadData() {
+  init() {
+    this.setupEventListeners();
+    this.loadCurrentCategory();
+  }
+  
+  setupEventListeners() {
+    // Navigation buttons
+    document.getElementById('prev-btn').addEventListener('click', () => this.previousCategory());
+    document.getElementById('next-btn').addEventListener('click', () => this.nextCategory());
+    
+    // Tab buttons
+    document.querySelectorAll('.tab-btn').forEach((btn, index) => {
+      btn.addEventListener('click', () => this.goToCategory(index));
+    });
+  }
+  
+  async loadCurrentCategory() {
+    const category = this.categories[this.currentIndex];
+    
     try {
-      const response = await fetch(this.dataUrl);
-      
-      if (!response.ok) {
-        throw new Error(`Failed to load data: ${response.status} ${response.statusText}`);
-      }
-      
-      this.data = await response.json();
-      return this.data;
+      this.data = await this.loadData(category.dataUrl);
+      // Reset sort to default for the category type
+      this.sortConfig = { key: 'average', direction: this.getDefaultSortDirection() };
+      this.updateUI();
+      this.renderTable();
     } catch (error) {
-      console.error('Error loading leaderboard data:', error);
-      document.getElementById(this.titleId).textContent = 'Error loading leaderboard data';
+      console.error('Error loading data:', error);
+      document.getElementById('table-title').textContent = 'Error loading data';
+    }
+  }
+  
+  async loadData(url) {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      return await response.json();
+    } catch (error) {
+      console.error('Error loading data:', error);
       throw error;
     }
   }
   
-  /**
-   * Handle sorting when a column header is clicked
-   * @param {string} key - The column key to sort by
-   */
+  updateUI() {
+    // Update title
+    document.getElementById('table-title').textContent = this.data.title;
+    
+    // Update active tab
+    document.querySelectorAll('.tab-btn').forEach((btn, index) => {
+      btn.classList.toggle('active', index === this.currentIndex);
+    });
+    
+    // Update navigation buttons
+    document.getElementById('prev-btn').disabled = this.currentIndex === 0;
+    document.getElementById('next-btn').disabled = this.currentIndex === this.categories.length - 1;
+  }
+  
+  goToCategory(index) {
+    if (index !== this.currentIndex) {
+      this.currentIndex = index;
+      this.loadCurrentCategory();
+    }
+  }
+  
+  previousCategory() {
+    if (this.currentIndex > 0) {
+      this.currentIndex--;
+      this.loadCurrentCategory();
+    }
+  }
+  
+  nextCategory() {
+    if (this.currentIndex < this.categories.length - 1) {
+      this.currentIndex++;
+      this.loadCurrentCategory();
+    }
+  }
+  
   handleSort(key) {
     let direction = 'asc';
     if (this.sortConfig.key === key && this.sortConfig.direction === 'asc') {
@@ -66,13 +110,23 @@ class LeaderboardRenderer {
     this.renderTable();
   }
   
-  /**
-   * Create and return a table header row
-   * @returns {HTMLTableRowElement} The header row element
-   */
-  createHeaderRow() {
-    const headerRow = document.createElement('tr');
+  getDefaultSortDirection() {
+    // For regression tasks, lower values are better, so default to ascending
+    // For classification and description, higher values are better, so default to descending
+    return this.categories[this.currentIndex].id === 'regression' ? 'asc' : 'desc';
+  }
+  
+  renderTable() {
+    if (!this.data) return;
     
+    // Clear existing content
+    const tableHead = document.getElementById('table-head');
+    const tableBody = document.getElementById('table-body');
+    tableHead.innerHTML = '';
+    tableBody.innerHTML = '';
+    
+    // Create header
+    const headerRow = document.createElement('tr');
     this.data.columns.forEach(column => {
       const th = document.createElement('th');
       th.textContent = column.label;
@@ -82,7 +136,7 @@ class LeaderboardRenderer {
         th.addEventListener('click', () => this.handleSort(column.id));
         
         if (this.sortConfig.key === column.id) {
-          th.className += this.sortConfig.direction === 'asc' ? ' sorted-asc' : ' sorted-desc';
+          th.classList.add(this.sortConfig.direction === 'asc' ? 'sorted-asc' : 'sorted-desc');
         }
       }
       
@@ -92,33 +146,17 @@ class LeaderboardRenderer {
       
       headerRow.appendChild(th);
     });
+    tableHead.appendChild(headerRow);
     
-    return headerRow;
-  }
-  
-  /**
-   * Sort the data rows according to current sort configuration
-   * @returns {Array} Sorted array of data rows
-   */
-  getSortedRows() {
-    return [...this.data.rows].sort((a, b) => {
-      if (a[this.sortConfig.key] < b[this.sortConfig.key]) {
-        return this.sortConfig.direction === 'asc' ? -1 : 1;
-      }
-      if (a[this.sortConfig.key] > b[this.sortConfig.key]) {
-        return this.sortConfig.direction === 'asc' ? 1 : -1;
-      }
+    // Sort and create rows
+    const sortedRows = [...this.data.rows].sort((a, b) => {
+      const aVal = a[this.sortConfig.key];
+      const bVal = b[this.sortConfig.key];
+      
+      if (aVal < bVal) return this.sortConfig.direction === 'asc' ? -1 : 1;
+      if (aVal > bVal) return this.sortConfig.direction === 'asc' ? 1 : -1;
       return 0;
     });
-  }
-  
-  /**
-   * Create table body with data rows
-   * @param {Array} sortedRows - Array of sorted data rows
-   * @returns {DocumentFragment} Fragment containing all table rows
-   */
-  createTableBody(sortedRows) {
-    const fragment = document.createDocumentFragment();
     
     sortedRows.forEach(row => {
       const tr = document.createElement('tr');
@@ -138,75 +176,12 @@ class LeaderboardRenderer {
         tr.appendChild(td);
       });
       
-      fragment.appendChild(tr);
+      tableBody.appendChild(tr);
     });
-    
-    return fragment;
-  }
-  
-  /**
-   * Render the complete table
-   */
-  renderTable() {
-    if (!this.data) {
-      console.error('No data available to render table');
-      return;
-    }
-    
-    // Set the table title
-    const titleElement = document.getElementById(this.titleId);
-    if (titleElement) {
-      titleElement.textContent = this.data.title;
-    }
-    
-    // Create and populate table header
-    const tableHead = document.getElementById(this.headId);
-    if (tableHead) {
-      tableHead.innerHTML = '';
-      tableHead.appendChild(this.createHeaderRow());
-    }
-    
-    // Get sorted rows
-    const sortedRows = this.getSortedRows();
-    
-    // Create and populate table body
-    const tableBody = document.getElementById(this.bodyId);
-    if (tableBody) {
-      tableBody.innerHTML = '';
-      tableBody.appendChild(this.createTableBody(sortedRows));
-    }
-  }
-  
-  /**
-   * Initialize the leaderboard
-   * @returns {Promise} Promise resolving when initialization is complete
-   */
-  async init() {
-    try {
-      await this.loadData();
-      this.renderTable();
-      return true;
-    } catch (error) {
-      console.error('Failed to initialize leaderboard:', error);
-      return false;
-    }
   }
 }
 
-// Initialize the leaderboard when the DOM is loaded
-document.addEventListener('DOMContentLoaded', async () => {
-  const leaderboard = new LeaderboardRenderer({
-    tableId: 'leaderboard',
-    headId: 'table-head',
-    bodyId: 'table-body',
-    titleId: 'table-title',
-    dataUrl: 'static/json/leaderboard-data.json'
-  });
-  
-  try {
-    await leaderboard.init();
-    console.log('Leaderboard initialized successfully');
-  } catch (error) {
-    console.error('Leaderboard initialization failed:', error);
-  }
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  new CarouselLeaderboard();
 });
