@@ -316,3 +316,6 @@ th.sorted-desc::after {
 tr:hover {
     background-color: #f8f9fa;
 }
+#table-title{
+  font-size: 30;
+}
