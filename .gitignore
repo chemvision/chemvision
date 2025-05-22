@@ -1,1 +1,4 @@
 fastapi-server.py
+.env
+__pycache__
+.venv/
