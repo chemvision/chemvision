@@ -1,0 +1,41 @@
+{
+  "title": "Leaderboard on MolVision",
+  "columns": [
+    { "id": "rank", "label": "#", "sortable": false },
+    { "id": "model", "label": "Model", "sortable": true },
+    { "id": "method", "label": "Method", "sortable": true, "highlight": true },
+    { "id": "notes", "label": "Notes", "sortable": false },
+    { "id": "average", "label": "Average", "sortable": true, "emphasized": true },
+    { "id": "bace", "label": "BACE-V", "sortable": true },
+    { "id": "bbbp", "label": "BBBP-V", "sortable": true },
+    { "id": "hiv", "label": "HIV-V", "sortable": true },
+    { "id": "clintox", "label": "Clintox-V", "sortable": true },
+    { "id": "tox21", "label": "Tox21-V", "sortable": true }
+  ],
+  "rows": [
+    {
+      "rank": 1,
+      "model": "GPT-4o🏆",
+      "method": "ICL",
+      "notes": "k=2",
+      "average": 85.22,
+      "bace": 79.45,
+      "bbbp": 82.31,
+      "hiv": 77.80,
+      "clintox": 91.25,
+      "tox21": 88.36
+    },
+    {
+      "rank": 2,
+      "model": "GPT-4v",
+      "method": "ICL",
+      "notes": "k=2",
+      "average": 82.17,
+      "bace": 76.22,
+      "bbbp": 80.45,
+      "hiv": 75.67,
+      "clintox": 88.93,
+      "tox21": 85.11
+    }
+  ]
+}
