@@ -1,4 +1,4 @@
-# ChemVision GPT Inference Tool
+# ChemVision Inference Tool
 
 A Python tool for running various vision language model inference on chemical datasets from HuggingFace, specifically designed for molecular image analysis and chemical property prediction tasks.
 
